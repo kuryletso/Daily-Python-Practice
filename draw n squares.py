@@ -1,4 +1,7 @@
 # Excercise: https://www.hackinscience.org/exercises/draw-n-squares
+#
+#
+# Solution:
 
 def draw_n_squares(n: int) -> str:
     top_bottom = "+" + ("---+" * n)
