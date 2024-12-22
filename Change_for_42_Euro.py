@@ -65,8 +65,8 @@ def var_gen_3(amount: int, index: int = 0, branch: dict = {}) -> None: # populat
             var_gen_3(dif, i, new_branch)
 
 
-#Fastest (Still not fast enough)
-def changes(amount, coins):
+#Faster (Still not fast enough)
+def changes_1(amount, coins):
     coins = sorted(coins, reverse=True)
     vars = []
 
@@ -102,6 +102,65 @@ def changes(amount, coins):
     var_gen_3_2(amount)
     # print(vars)
     return len(vars)
+
+
+
+# With memoization, slow
+from copy import deepcopy
+
+def changes(amount, coins):
+    amount = (amount,)
+    coins = sorted(coins, reverse=True)
+    cache: dict[int, dict[str, list[int] | set[tuple[int]]]] = {coins[-1] : {"complete": [1] * len(coins), "vars": {(coins[-1],)}}}
+    cache_template: dict = {"complete": [0] * len(coins), "vars": set()}
+        
+
+    def var_gen_5(memo: tuple = amount, coin_index: int = 0, branch: tuple = tuple()) -> None:
+        rem: int = memo[-1]
+        
+        if rem not in cache:
+            # 1 Create rem in cache with empty vars
+            cache.update({rem: deepcopy(cache_template)})
+
+        if rem in cache and all(cache[rem].get("complete", 0)):
+            # 2.1 Create branches for each variant of rem in cache
+            # 2.2 Update cache numbers with new branches
+
+            for m in range(len(memo)-1):
+                new_branches: set = set(map(lambda x: tuple(sorted(branch[m:] + x, reverse=True)), cache[rem]["vars"]))
+                cache[memo[m]]["vars"] |= new_branches
+
+        elif coin_index == len(coins) - 1:
+            # 3.1 Finish branch by adding (rem // coin[-1]) amount of coin[-1]
+            # 3.2 Update cache numbers with new branch
+
+            if not rem % coins[-1]:
+                new_branch: tuple = branch + (coins[-1],) * (rem // coins[-1])
+                for m in range(len(memo)):
+                    cache[memo[m]]["vars"].add(new_branch[m:])
+        else:
+            # 4.1 Substract each coin from rem, starting from coin_index' coin
+            # 4.2 Mark this coin for rem in cache as completed
+            # 4.3 IF dif < 0 : cancel this branch
+            # 4.4 IF dif = 0 : finish this branch; Update numbers in cache, adding branch
+            # 4.5 IF dif > 0 : add coin to branch; add dif to memo; run var_gen on rem  
+            for c in range(coin_index, len(coins)):
+                cache[rem]["complete"][c] = 1
+                dif: int = rem - coins[c]
+            
+                if dif < 0:
+                    continue
+                elif dif == 0:
+                    new_branch: tuple = branch + (coins[c],)
+                    for m in range(len(memo)):
+                        cache[memo[m]]["vars"].add(new_branch[m:])
+                else:
+                    new_branch: tuple = branch + (coins[c],)
+                    new_memo: tuple = memo + (dif,)
+                    var_gen_5(new_memo, c, new_branch)
+        
+    var_gen_5(amount)
+    return len(cache[amount[0]]["vars"])
 
 
 
