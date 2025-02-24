@@ -1,3 +1,10 @@
+# +---+---+---+
+# |   |   |   |
+# +---+---+---+
+# |   |   |   |
+# +---+---+---+
+# |   |   |   |
+# +---+---+---+
 # Excercise: https://www.hackinscience.org/exercises/draw-n-squares
 #
 #
@@ -11,4 +18,4 @@ def draw_n_squares(n: int) -> str:
 
 
 if __name__ == "__main__":
-    print(draw_n_squares(15))
+    print(draw_n_squares(3))

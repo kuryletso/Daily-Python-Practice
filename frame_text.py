@@ -1,7 +1,9 @@
-# Excercise: https://www.hackinscience.org/exercises/text-framing
-#
-#
-# Solution:
+# ╭───────────────────────────────────────────────────────────────╮
+# │Excercise: https://www.hackinscience.org/exercises/text-framing│
+# ╰───────────────────────────────────────────────────────────────╯
+# ╭─────────╮
+# │Solution:│
+# ╰─────────╯
 
 from dataclasses import dataclass
 
@@ -36,7 +38,6 @@ def frame_text(text: str, frame: Frame) -> str:
 
 if __name__ == "__main__":
     sample_1 = "It is 16:04:37."
-    sample_2 = """It is 16h19.
-And it's raining."""
+    sample_2 = """Solution:"""
 
     print(frame_text(sample_2, fancy_frame))
